@@ -11,7 +11,7 @@ const requests = {
   fetchAreaCode1: "/areaCode1", // 지역 코드 조회
   fetchDetailPetTour: "/detailPetTour", // 반려동물 동반 여행 정보
   fetchCategoryCode1: "/categoryCode1", // 서비스 분류 코드 조회
-  fetchAreaBasedList1: "/areaBasedList1?arrange=A", // 지역기반 관광정보 조회
+  fetchAreaBasedList1: "/areaBasedList1?arrange=A", // 지역기반 관광정보 조회 // A: 제목순 C: 수정일순 D:생성일순
 }
 
 export default requests;

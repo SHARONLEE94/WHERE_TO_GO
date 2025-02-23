@@ -1,12 +1,11 @@
 import axios from "../api/axios";
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router";
 import requests from "../api/request";
+import Sigungu from "./Sigungu";
 
 const Local = () => {
 
   const [localData, setLocalData] = useState<Item[]>([])
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,14 +29,7 @@ const Local = () => {
           <div className="localBox" key={data.rnum} >
             <p>{data.name}</p>
             <ul>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/12`)}>관광지</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/14`)}>문화시설</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/15`)}>행사/공연/축제</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/25`)}>여행코스</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/28`)}>레포츠</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/32`)}>숙박</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/38`)}>쇼핑</li>
-              <li onClick={() => navigate(`/${data.code}/${data.rnum}/39`)}>음식점</li>
+              <Sigungu localCode={data.code}/>
             </ul>
           </div>
         )

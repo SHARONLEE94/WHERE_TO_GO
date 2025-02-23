@@ -10,7 +10,7 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`${requests.fetchAreaBasedList1}&contentTypeId=${contentType}&areaCode=${code}&sigunguCode=${rnum}`)
-      // console.log(result.data.response.body.items.item)
+      console.log('local',result.data.response.body.items.item)
       setData(result.data.response.body.items.item);
     };
     fetchData();
