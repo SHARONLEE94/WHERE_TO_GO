@@ -1,21 +1,20 @@
+import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import requests from "../../api/request";
 
 const DetailPage = () => {
-  const { code, rnum } = useParams();
+  const { code, rnum, contentType } = useParams();
   const [data, setData] = useState<Item[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch(
-          `http://apis.data.go.kr/B551011/KorService1/areaBasedList1?serviceKey=Lb%2Fpe0QdvmS9xi1rZA%2FI0GrloCUanMMf0EBvD0Mq3ebRvn63bGT6WXXHvJosBF2qCvMKVwjL7XpGGE1oB9Cj4g%3D%3D&pageNo=1&numOfRows=30&MobileApp=AppTest&MobileOS=ETC&arrange=A&contentTypeId=32&areaCode=${code}&sigunguCode=${rnum}&_type=json`
-      );
-      const json = (await result.json()) as Root;
-      setData(json.response.body.items.item);
-      console.log(json.response.body.items.item)
+      const result = await axios.get(`${requests.fetchAreaBasedList1}&contentTypeId=${contentType}&areaCode=${code}&sigunguCode=${rnum}`)
+      // console.log(result.data.response.body.items.item)
+      setData(result.data.response.body.items.item);
     };
     fetchData();
-  }, [])
+  }, [code,rnum,contentType])
 
   return(
     <div>
