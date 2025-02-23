@@ -22,5 +22,6 @@
 
 ### **API 사용**
 - 공공데이터 API 활용 [(링크)](https://www.data.go.kr/data/15101578/openapi.do#/tab_layer_detail_function)
+- axios로 **serviceKey** 관리시 주의사항 : "디코딩" 값으로 넣어야 함 >> 인코딩 데이터 사용시 한 번 더 인코딩하기 때문에 serviceKey를 올바르게 인식하지 못함
 
 ---
