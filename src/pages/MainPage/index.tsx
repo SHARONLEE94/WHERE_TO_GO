@@ -1,15 +1,16 @@
+import Category from "@/components/Category"
 import Banner from "../../components/Banner"
-import Local from "../../components/Local"
-import Nav from "../../components/Nav"
+import Contents from "../../components/Contents"
+// import Local from "../../components/Local"
 
 const MainPage = () => {
 
   return (
     <div className="mainPage">
-      <h1>mainPage</h1>
-      <Nav />
       <Banner />
-      <Local />
+      <Contents />
+      {/* <Local /> */}
+      <Category />
     </div>
   )
 }

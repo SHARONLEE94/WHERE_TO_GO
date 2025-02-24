@@ -2,19 +2,25 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import EventPage from "./pages/EventPage/EventPage";
 import MainPage from "./pages/MainPage";
 import DetailPage from "./pages/DetailPage";
+import Footer from "./components/Footer";
+import Nav from "./components/Nav";
 
 function App() {
   return (
-    <div className="app">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          {/* <Route path="/main" element={<MainPage />} /> */}
-          <Route path="/event" element={<EventPage />} />
-          <Route path="/:code/:rnum/:contentType" element={<DetailPage />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-white flex flex-col">
+        <Nav />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            {/* <Route path="/main" element={<MainPage />} /> */}
+            <Route path="/event" element={<EventPage />} />
+            <Route path="/:code/:rnum/:contentType" element={<DetailPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   )
 }
 
