@@ -10,8 +10,7 @@ const Local = () => {
   useEffect(() => {
     const fetchData = async () => {
       try{
-        const result = await axios.get(`${requests.fetchAreaCode1}`)
-        // console.log(result.data.response.body.items.item)
+        const result = await axios.get(`${requests.fetchAreaCode1}numOfRows=10&pageNo=1`)
         setLocalData(result.data.response.body.items.item)
       } catch(e) {
         console.log(e)

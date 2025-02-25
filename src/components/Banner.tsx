@@ -1,8 +1,22 @@
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
+import { useNavigate } from "react-router"
 
 const Banner = () => {
+
+  const [searchValue, setSearchValue] = useState("")
+  const navigate = useNavigate()
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value)
+  }
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    navigate(`/search?value=${searchValue}`)
+  }
   
   return(
     <div>
@@ -11,7 +25,7 @@ const Banner = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">설렘 가득한 여행</h1>
           <p className="text-lg mb-8 text-gray-600">당신의 목적지는 어디인가요?</p>
           <form
-            // onSubmit={this.handleSearchSubmit}
+            onSubmit={handleSearchSubmit}
             className="max-w-2xl mx-auto flex gap-4 bg-white p-4 rounded-lg shadow-lg"
           >
             <div className="flex-1 flex gap-2">
@@ -19,8 +33,8 @@ const Banner = () => {
               <Input
                 placeholder="어디로 떠나시나요?"
                 className="border-none shadow-none"
-                // value={searchQuery}
-                // onChange={this.handleSearchChange}
+                value={searchValue}
+                onChange={handleChange}
               />
             </div>
             <Button type="submit" className="bg-[#FFB7C5] hover:bg-[#ff9fb2] h-10">
