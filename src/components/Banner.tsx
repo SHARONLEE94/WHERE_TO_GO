@@ -6,7 +6,6 @@ const Banner = () => {
   
   return(
     <div>
-      {/* Hero Section */}
       <section className="relative h-[500px] flex items-center justify-center" style={{ backgroundColor: "#FFF0F3" }}>
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">설렘 가득한 여행</h1>

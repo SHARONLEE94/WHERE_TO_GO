@@ -5,15 +5,19 @@ import { Button } from "./ui/button"
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
+  const toggleMenu = (isMenuOpen:boolean) => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
   return (
-    <header className="border-b">
+    <header className="border-b z-999">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
       <NavLink to="/" className="text-xl font-bold" style={{ color: "#FFB7C5" }}>
-            Korea Travel
+            WHERE_TO_GO
           </NavLink>
 
           {/* Mobile menu button */}
-          <button className="md:hidden">
+          <button className="md:hidden" onClick={()=>toggleMenu(isMenuOpen)}>
             <span className="sr-only">메뉴 열기</span>
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
