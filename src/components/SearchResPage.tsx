@@ -63,7 +63,7 @@ const SearchResults = () =>{
   };
 
   const renderPagination = () => {
-    const maxPagesToShow = 5; 
+    const maxPagesToShow = Math.min(5, totalPages);
     const pageButtons = [];
   
     let startPage = Math.max(1, pageNo - 4);
@@ -71,7 +71,7 @@ const SearchResults = () =>{
   
     if (pageNo <= 5) {
       startPage = 1;
-      endPage = 5;
+      endPage = Math.min(5, totalPages);
     } 
     else if (pageNo >= totalPages - 4) {
       startPage = totalPages - 4;
@@ -79,7 +79,7 @@ const SearchResults = () =>{
     } 
     else {
       startPage = pageNo - 4;
-      endPage = pageNo;
+      endPage = Math.min(pageNo, totalPages);
     }
   
     for (let page = startPage; page <= endPage; page++) {
