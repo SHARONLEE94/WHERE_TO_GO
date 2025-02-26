@@ -18,8 +18,10 @@ const SearchResults = () =>{
   const [searchTerm, setSearchTerm] = useState("")
   const [searchTempVal, setSearchTempVal] = useState("") // searchTerm 변수를 사용하면 값이 즉각적인 변화되고 검색하기 버튼 클릭 또는 enter 사용시 "" 값이 들어가버림 추가로 변수 설정.
   const [totalCount, setTotalCount] = useState(0)
-  const [numOfRows, setNumOfRows] = useState(10)
+  // const [numOfRows, setNumOfRows] = useState(10)
   const [pageNo, setPageNo] = useState(1)
+
+  const numOfRows = 10; // 일단 임의로 고정
 
   useEffect(() => {
     setSearchTerm(query);
@@ -28,11 +30,11 @@ const SearchResults = () =>{
   useEffect(() => {
     const fetchData = async () => {
       try{
-        const result = await axios.get(`${requests.fetchSearchKeyword1}?listYN=Y&arrange=A&keyword=${searchTerm}&numOfRows=${numOfRows}&pageNo=${pageNo}`)
+        const result = await axios.get(`${requests.fetchSearchKeyword1}?listYN=Y&arrange=A&keyword=${searchTerm}&numOfRows=10&pageNo=${pageNo}`)
         if(result) {
           setLocalData(result.data.response.body.items.item || [])
           setTotalCount(result.data.response.body.totalCount || 0)
-          setNumOfRows(result.data.response.body.numOfRows || 10)
+          // setNumOfRows(result.data.response.body.numOfRows || 10)
           setPageNo(result.data.response.body.pageNo || 1)
         }
       } catch(e) {
@@ -52,14 +54,50 @@ const SearchResults = () =>{
     setSearchTerm(searchTempVal)
   }
 
-  // Calculate pagination
-  const totalPages = Math.ceil(totalCount / numOfRows)
-  // const startIndex = (pageNo - 1) * numOfRows
-  // const paginatedResults = localData.slice(startIndex, startIndex + numOfRows)
+  const totalPages = totalCount > 0 ? Math.ceil(totalCount / numOfRows) : 1;
 
-  const handlePageChange = (page: number): void => {
-    setPageNo(page)
-  }
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    if (newPage === pageNo) return;
+    setPageNo(newPage);
+  };
+
+  const renderPagination = () => {
+    const maxPagesToShow = 5; 
+    const pageButtons = [];
+  
+    let startPage = Math.max(1, pageNo - 4);
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+  
+    if (pageNo <= 5) {
+      startPage = 1;
+      endPage = 5;
+    } 
+    else if (pageNo >= totalPages - 4) {
+      startPage = totalPages - 4;
+      endPage = totalPages;
+    } 
+    else {
+      startPage = pageNo - 4;
+      endPage = pageNo;
+    }
+  
+    for (let page = startPage; page <= endPage; page++) {
+      pageButtons.push(
+        <Button
+          key={page}
+          variant={pageNo === page ? "default" : "outline"}
+          className={pageNo === page ? "bg-[#FFB7C5] hover:bg-[#ff9fb2]" : ""}
+          onClick={() => handlePageChange(page)}
+        >
+          {page}
+        </Button>
+      );
+    }
+  
+    return pageButtons;
+  };
+   
 
   return(
     <div className="min-h-screen bg-white">
@@ -102,10 +140,12 @@ const SearchResults = () =>{
             <div className="space-y-6">
               {localData.length > 0 
                 ? (localData.map((data) => (
-                    <Card key={data.title}  className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <Card key={data.contentid}  className="overflow-hidden hover:shadow-lg transition-shadow">
                       <CardContent className="p-0">
                         <div className="flex flex-col md:flex-row">
-                          <div className="md:w-1/3 h-48 md:h-auto relative">
+                          <div 
+                            className="md:w-1/3 h-48 md:h-48 lg:h-56 relative overflow-hidden"
+                            style={{ aspectRatio: "4/3" }}>
                             <img
                               src={data.firstimage || "/placeholder.svg"}
                               alt={data.title}
@@ -129,11 +169,9 @@ const SearchResults = () =>{
                             </div>
                             <p className="text-gray-600 mb-4">description</p>
                             <div className="flex flex-wrap gap-2">
-                              {/* {data.tags.map((tag) => ( */}
-                                <span className="px-2 py-1 bg-[#FFF0F3] text-[#FFB7C5] text-xs rounded-full">
-                                  # 여행을_떠나요_즐거운_마음으로
-                                </span>
-                              {/* ))} */}
+                              <span className="px-2 py-1 bg-[#FFF0F3] text-[#FFB7C5] text-xs rounded-full">
+                                # 여행을_떠나요_즐거운_마음으로
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -148,37 +186,26 @@ const SearchResults = () =>{
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center mt-8">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handlePageChange(Math.max(1, pageNo - 1))}
-                      disabled={pageNo === 1}
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </Button>
+                <div className="flex justify-center flex-wrap gap-2 mt-8">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handlePageChange(Math.max(1, pageNo - 1))}
+                    disabled={pageNo === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
 
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <Button
-                        key={page}
-                        variant={pageNo === page ? "default" : "outline"}
-                        className={pageNo === page ? "bg-[#FFB7C5] hover:bg-[#ff9fb2]" : ""}
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </Button>
-                    ))}
+                  {renderPagination()}
 
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handlePageChange(Math.min(totalPages, pageNo + 1))}
-                      disabled={pageNo === totalPages}
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handlePageChange(Math.min(totalPages, pageNo + 1))}
+                    disabled={pageNo === totalPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
               )}
             </div>
