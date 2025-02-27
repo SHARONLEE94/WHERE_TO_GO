@@ -4,7 +4,8 @@ import MainPage from "./pages/MainPage";
 import DetailPage from "./pages/DetailPage";
 import Footer from "./components/Footer";
 import Nav from "./components/Nav";
-import SearchResults from "./components/SearchResPage";
+import SearchResults from "./pages/SearchPage/SearchResPage";
+import SearchDetail from "./pages/SearchPage/SearchDetail";
 
 function App() {
   return (
@@ -13,17 +14,17 @@ function App() {
         <Nav />
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<MainPage />} />
-            {/* <Route path="/main" element={<MainPage />} /> */}
+            <Route path="/home" element={<MainPage />} />
             <Route path="/event" element={<EventPage />} />
             <Route path="/:code/:rnum/:contentType" element={<DetailPage />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/searchDetail" element={<SearchDetail />} />
           </Routes>
         </main>
         <Footer />
       </div>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
