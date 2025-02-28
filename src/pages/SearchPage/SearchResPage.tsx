@@ -30,6 +30,7 @@ const SearchResults = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsloading] = useState(false);
   const [error, setError] = useState(false);
+  const [errorData, setErrorData] = useState("");
   // const [numOfRows, setNumOfRows] = useState(10)
   const [pageNo, setPageNo] = useState(1); // 데이터 통신에서 받아온 페이지
 
@@ -49,13 +50,15 @@ const SearchResults = () => {
           setLocalData(result.data.response.body.items.item || []);
           setTotalCount(result.data.response.body.totalCount || 0);
           setPageNo(result.data.response.body.pageNo || 1);
-          setIsloading(false);
           window.scrollTo(0, 0);
         }
       } catch (e) {
         setError(true);
-        console.log(e);
-        setLocalData([]);
+        if (e instanceof Error) {
+          setErrorData(e.message);
+        }
+      } finally {
+        setIsloading(false);
       }
     };
     if (searchTerm) fetchData();
@@ -79,7 +82,7 @@ const SearchResults = () => {
             <h2 className="text-red-600 text-xl font-semibold mb-2">
               오류가 발생했습니다
             </h2>
-            {/* <p className="text-red-500">오류!</p> */}
+            <p className="text-red-500">{errorData}</p>
             <Button
               className="mt-4 bg-red-600 hover:bg-red-700"
               onClick={() => window.location.reload()}
