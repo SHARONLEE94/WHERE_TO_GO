@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapPin, Star } from "lucide-react";
+import { Loader2, MapPin, Star } from "lucide-react";
 import axios from "../../api/axios";
 import requests from "../../api/request";
 import { useNavigate } from "react-router";
@@ -8,6 +8,7 @@ import { Root, Item } from "@/types/Search";
 import useSearchParmas from "@/hooks/useSearchParmas";
 import SearchBanner from "@/components/SearchBanner";
 import Pagination from "@/components/Page";
+import { Button } from "@/components/ui/button";
 // import Pagination from "@/components/Page";
 
 const SearchResults = () => {
@@ -28,6 +29,7 @@ const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsloading] = useState(false);
+  const [error, setError] = useState(false);
   // const [numOfRows, setNumOfRows] = useState(10)
   const [pageNo, setPageNo] = useState(1); // 데이터 통신에서 받아온 페이지
 
@@ -51,6 +53,7 @@ const SearchResults = () => {
           window.scrollTo(0, 0);
         }
       } catch (e) {
+        setError(true);
         console.log(e);
         setLocalData([]);
       }
@@ -58,8 +61,36 @@ const SearchResults = () => {
     if (searchTerm) fetchData();
   }, [searchTerm, pageNo]);
 
-  if (isLoading) return <div>LOADING...</div>;
-  //  if(error) return <div>오류가 발생했습니다. 가시 시도해주세요 다르페이조올어ㅗ라라</div>
+  if (isLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-[#FFB7C5] mx-auto mb-4" />
+          <p className="text-gray-500">LOADING...</p>
+        </div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="bg-red-50 p-6 rounded-lg">
+            <h2 className="text-red-600 text-xl font-semibold mb-2">
+              오류가 발생했습니다
+            </h2>
+            {/* <p className="text-red-500">오류!</p> */}
+            <Button
+              className="mt-4 bg-red-600 hover:bg-red-700"
+              onClick={() => window.location.reload()}
+            >
+              다시 시도
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-white">
       {/* Search Header */}
