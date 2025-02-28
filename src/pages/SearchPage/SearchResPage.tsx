@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { MapPin, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import axios from "../../api/axios";
 import requests from "../../api/request";
 import { useNavigate } from "react-router";
@@ -8,6 +7,8 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Root, Item } from "@/types/Search";
 import useSearchParmas from "@/hooks/useSearchParmas";
 import SearchBanner from "@/components/SearchBanner";
+import Pagination from "@/components/Page";
+// import Pagination from "@/components/Page";
 
 const SearchResults = () => {
   const navigate = useNavigate();
@@ -18,20 +19,17 @@ const SearchResults = () => {
   // url 파라미터 값
   useEffect(() => {
     const location = query.get("location") ?? "";
-    const page = query.get("page") ?? "";
+    const page = Number(query.get("page")) || 1;
     setSearchVal(location);
-    setPageNo(Number(page));
+    setPageNo(page);
   }, [query.get("location"), query.get("page")]);
 
   const [localData, setLocalData] = useState<Item[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [searchTempVal, setSearchTempVal] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsloading] = useState(false);
   // const [numOfRows, setNumOfRows] = useState(10)
   const [pageNo, setPageNo] = useState(1); // 데이터 통신에서 받아온 페이지
-
-  const numOfRows = 10; // 일단 임의로 고정
 
   useEffect(() => {
     setSearchTerm(searchVal);
@@ -60,56 +58,12 @@ const SearchResults = () => {
     if (searchTerm) fetchData();
   }, [searchTerm, pageNo]);
 
-  const totalPages = totalCount > 0 ? Math.ceil(totalCount / numOfRows) : 1;
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    if (newPage === pageNo) return;
-    setPageNo(newPage);
-    navigate(`/search?location=${searchVal}&page=${newPage}`);
-  };
-
-  const renderPagination = () => {
-    const maxPagesToShow = Math.min(5, totalPages);
-    const pageButtons = [];
-
-    let startPage = Math.max(1, pageNo - 4);
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-    if (pageNo <= 5) {
-      startPage = 1;
-      endPage = Math.min(5, totalPages);
-    } else if (pageNo >= totalPages - 4) {
-      startPage = totalPages - 4;
-      endPage = totalPages;
-    } else {
-      startPage = pageNo - 4;
-      endPage = Math.min(pageNo, totalPages);
-    }
-
-    for (let page = startPage; page <= endPage; page++) {
-      pageButtons.push(
-        <Button
-          key={page}
-          variant={pageNo === page ? "default" : "outline"}
-          className={pageNo === page ? "bg-[#FFB7C5] hover:bg-[#ff9fb2]" : ""}
-          onClick={() => handlePageChange(page)}
-        >
-          {page}
-        </Button>
-      );
-    }
-
-    return pageButtons;
-  };
-
   if (isLoading) return <div>LOADING...</div>;
-
   //  if(error) return <div>오류가 발생했습니다. 가시 시도해주세요 다르페이조올어ㅗ라라</div>
   return (
     <div className="min-h-screen bg-white">
       {/* Search Header */}
-      <SearchBanner pageNo={pageNo} />
+      <SearchBanner />
 
       {/* Results Section */}
       <div className="container mx-auto px-4 py-8">
@@ -147,7 +101,7 @@ const SearchResults = () => {
                     >
                       <div className="flex flex-col md:flex-row">
                         <div
-                          className="md:w-1/3 h-48 md:h-48 lg:h-56 relative overflow-hidden"
+                          className="md:w-1/3 h-48 md:h-48 lg:h-56 relative overflow-hidden pl-4 pr-4"
                           style={{ aspectRatio: "4/3" }}
                         >
                           <img
@@ -200,32 +154,11 @@ const SearchResults = () => {
                 </>
               )}
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center flex-wrap gap-2 mt-8">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => handlePageChange(Math.max(1, pageNo - 1))}
-                    disabled={pageNo === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {renderPagination()}
-
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() =>
-                      handlePageChange(Math.min(totalPages, pageNo + 1))
-                    }
-                    disabled={pageNo === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
+              <Pagination
+                totalCount={totalCount}
+                pageNo={pageNo}
+                searchVal={searchVal}
+              />
             </div>
           </div>
         </div>
